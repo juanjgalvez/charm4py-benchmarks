@@ -30,9 +30,9 @@ class StreamingPrefixCount(Chare):
                 if self.prefix_count[prefix] > 3:
                     self.popular_prefixes.add(prefix)
 
-    def get_popular(self, f):
+    def get_popular(self, callback):
         # a reduction is not strictly necessary but is more scalable
-        self.reduce(f, self.popular_prefixes, Reducer.myreducer)
+        self.reduce(callback, self.popular_prefixes, Reducer.myreducer)
 
 
 def main(args):
@@ -53,7 +53,7 @@ def main(args):
 
         # wait for quiescence
         charm.waitQD()
-        # get the aggregates results
+        # get the aggregated results
         results = Future()
         streaming_actors.get_popular(results)
         popular_prefixes = results.get()
